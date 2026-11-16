@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DRAMA AI STUDIO v3.0 - YouTube Cloning, Face-Lock & Micro-Drama Reels</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        cinematic: ['Cinzel', 'serif'],
+                    },
+                    colors: {
+                        studio: {
+                            950: '#08080a',
+                            900: '#111116',
+                            800: '#1b1b22',
+                            700: '#262630',
+                            accent: '#e11d48',
+                            cyber: '#06b6d4',
+                            gold: '#f59e0b'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111116;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #262630;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3f3f4e;
+        }
+        .glass-panel {
+            background: rgba(20, 20, 26, 0.82);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .step-active {
+            border-color: #e11d48;
+            background: linear-gradient(135deg, rgba(225, 29, 72, 0.18) 0%, rgba(245, 158, 11, 0.12) 60%, rgba(20, 20, 26, 0.95) 100%);
+            box-shadow: 0 0 24px rgba(225, 29, 72, 0.18);
+        }
+        .cinema-glow {
+            box-shadow: 0 0 20px rgba(225, 29, 72, 0.35), 0 0 10px rgba(245, 158, 11, 0.25);
+        }
+    </style>
+</head>
+<body class="bg-studio-950 text-zinc-100 min-h-screen flex flex-col antialiased selection:bg-rose-600 selection:text-white">
+
+    <!-- Top Navigation Bar -->
+    <header class="sticky top-0 z-40 glass-panel border-b border-zinc-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-rose-600 via-amber-500 to-cyan-500 flex items-center justify-center cinema-glow border border-amber-300/30">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h1 class="font-cinematic font-extrabold text-sm sm:text-lg tracking-wider bg-gradient-to-r from-white via-amber-200 to-rose-300 bg-clip-text text-transparent">
+                            DRAMA AI STUDIO
+                        </h1>
+                        <span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-rose-500/15 text-rose-400 border border-rose-500/30">v3.0</span>
+                    </div>
+                    <p class="text-[11px] text-zinc-400 hidden sm:block">YouTube Cloning, Face-Lock & Micro-Drama China/Indonesia Generator</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2 sm:gap-3">
+                <button onclick="openPromptGuideModal()" class="px-3 py-1.5 rounded-lg bg-zinc-800/90 hover:bg-zinc-700 text-xs font-medium text-zinc-200 border border-zinc-700 hover:border-amber-500/50 transition flex items-center gap-1.5">
+                    <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    <span>Template 4 Prompt</span>
+                </button>
+                <button onclick="resetProject()" class="px-3 py-1.5 rounded-lg bg-rose-600/15 hover:bg-rose-600/25 text-xs font-medium text-rose-400 border border-rose-500/30 transition">
+                    Proyek Baru
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Studio Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        
+        <!-- Progress Stepper 4 Tahap -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
+            <button onclick="switchTab(1)" id="tab-btn-1" class="step-active text-left p-3.5 rounded-2xl border border-zinc-800 transition-all duration-200 flex flex-col justify-between">
+                <div class="flex items-center justify-between mb-1">
+                    <span class="text-xs font-bold uppercase tracking-wider text-rose-400">Tahap 1</span>
+                    <span id="badge-1" class="w-2 h-2 rounded-full bg-rose-400"></span>
+                </div>
+                <div class="font-semibold text-sm text-white">Ide & Kloning YouTube</div>
+                <div class="text-xs text-zinc-400 mt-0.5 truncate">Genre atau kloning link</div>
+            </button>
+
+            <button onclick="switchTab(2)" id="tab-btn-2" class="text-left p-3.5 rounded-2xl border border-zinc-800 bg-studio-900/60 hover:bg-studio-800/60 transition-all duration-200 flex flex-col justify-between">
+                <div class="flex items-center justify-between mb-1">
+                    <span class="text-xs font-bold uppercase tracking-wider text-zinc-400">Tahap 2</span>
+                    <span id="badge-2" class="w-2 h-2 rounded-full bg-zinc-700"></span>
+                </div>
+                <div class="font-semibold text-sm text-zinc-200">Alur & Skenario Scene</div>
+                <div class="text-xs text-zinc-400 mt-0.5 truncate">Konflik, dialog & durasi</div>
+            </button>
+
+            <button onclick="switchTab(3)" id="tab-btn-3" class="text-left p-3.5 rounded-2xl border border-zinc-800 bg-studio-900/60 hover:bg-studio-800/60 transition-all duration-200 flex flex-col justify-between">
+                <div class="flex items-center justify-between mb-1">
+                    <span class="text-xs font-bold uppercase tracking-wider text-zinc-400">Tahap 3</span>
+                    <span id="badge-3" class="w-2 h-2 rounded-full bg-zinc-700"></span>
+                </div>
+                <div class="font-semibold text-sm text-zinc-200">Visual & Face-Lock</div>
+                <div class="text-xs text-zinc-400 mt-0.5 truncate">Upload foto wajah & lokasi</div>
+            </button>
+
+            <button onclick="switchTab(4)" id="tab-btn-4" class="text-left p-3.5 rounded-2xl border border-zinc-800 bg-studio-900/60 hover:bg-studio-800/60 transition-all duration-200 flex flex-col justify-between">
+                <div class="flex items-center justify-between mb-1">
+                    <span class="text-xs font-bold uppercase tracking-wider text-zinc-400">Tahap 4</span>
+                    <span id="badge-4" class="w-2 h-2 rounded-full bg-zinc-700"></span>
+                </div>
+                <div class="font-semibold text-sm text-zinc-200">Prompt Video Scene</div>
+                <div class="text-xs text-zinc-400 mt-0.5 truncate">Maks 850 kar • 16:9 / 9:16</div>
+            </button>
+        </div>
+
+        <!-- ==================== STEP 1: IDE CERITA & KLONING YOUTUBE ==================== -->
+        <section id="step-1" class="space-y-6">
+            <div class="glass-panel rounded-2xl p-5 sm:p-6 border-t border-rose-500/25">
+                <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                    <div class="space-y-2 flex-1">
+                        <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-rose-500/10 border border-rose-500/25 text-rose-400 text-xs font-medium">
+                            <span>Prompt 1</span> • <span>Brainstorming Cerita Viral & Kloning Link Video</span>
+                        </div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-white">Generate 10 Ide Judul Drama & Kloning YouTube</h2>
+                        <p class="text-sm text-zinc-400">Pilih genre drama China/Indonesia atau tempel link video YouTube untuk dikloning alur emosional dan plot twist-nya menjadi 10 ide cerita baru.</p>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-3">
+                        <div>
+                            <label class="block text-xs text-zinc-400 mb-1">Nuansa / Genre Drama</label>
+                            <select id="genre-select" class="bg-studio-950 border border-zinc-700 text-sm rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-rose-500 max-w-xs sm:max-w-sm">
+                                <option value="Campuran Drama China (Kolosal/CEO) & Drama Indonesia (Keluarga/Modern)" selected>Campuran China & Indonesia</option>
+                                <option value="Drama Kolosal Kekaisaran China (Pengkhianatan Selir, Identitas Rahasia, Balas Dendam)">Drama Kolosal Kekaisaran China</option>
+                                <option value="Drama CEO & Pewaris Konglomerat Modern (Menyamar Miskin, Penyesalan Mantan)">Drama CEO & Konglomerat Modern</option>
+                                <option value="Drama Keluarga & Pengorbanan Indonesia (Air Mata Ibu, Rahasia Warisan, Karma)">Drama Keluarga Indonesia</option>
+                            </select>
+                        </div>
+                        <button onclick="generateIdeas()" id="btn-gen-ideas" class="mt-auto px-5 py-2.5 rounded-xl bg-gradient-to-r from-rose-600 via-rose-500 to-amber-500 hover:from-rose-500 hover:to-amber-400 text-white font-semibold text-sm shadow-lg shadow-rose-600/25 transition flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                            </svg>
+                            <span>Generate 10 Ide Cerita</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tema Tambahan -->
+                <div class="mt-4 pt-4 border-t border-zinc-800/80">
+                    <label class="block text-xs text-zinc-400 mb-1.5">Kata Kunci / Tema Spesifik (Opsional)</label>
+                    <input type="text" id="custom-theme" placeholder="Contoh: Putri mahkota yang dibuang ternyata tabib dewa, atau menantu yang diremehkan mertua..." class="w-full bg-studio-950/80 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-rose-500">
+                </div>
+
+                <!-- FITUR BARU: KLONING DARI LINK YOUTUBE -->
+                <div class="mt-5 pt-5 border-t border-zinc-800/80 space-y-3">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-cyan-400">Atau Kloning dari Link YouTube (YouTube Link Cloning)</label>
+                    </div>
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <input type="url" id="youtube-url-input" placeholder="Tempel link YouTube / Shorts drama referensi di sini..." class="flex-1 bg-studio-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-cyan-500">
+                        <button onclick="cloneYouTubeIdea()" id="btn-clone-yt" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600 via-teal-600 to-rose-600 hover:from-cyan-500 hover:to-rose-500 text-white font-semibold text-sm shadow-lg shadow-cyan-600/25 transition flex items-center justify-center gap-2 shrink-0">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <span>Kloning & Buat 10 Ide Serupa</span>
+                        </button>
+                    </div>
+                    <p class="text-[11px] text-zinc-500">AI akan menganalisis premis, hook pembuka, konflik emosional, dan gaya penceritaan dari tautan tersebut untuk merancang 10 ide drama baru.</p>
+                </div>
+            </div>
+
+            <!-- Loading State Step 1 -->
+            <div id="loading-1" class="hidden py-16 text-center space-y-4">
+                <div class="w-12 h-12 border-4 border-rose-500/30 border-t-amber-500 rounded-full animate-spin mx-auto"></div>
+                <p id="loading-1-text" class="text-zinc-300 font-medium">Meracik 10 ide drama penuh emosi & plot twist...</p>
+            </div>
+
+            <!-- Ideas Grid -->
+            <div id="ideas-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="col-span-full py-12 text-center border-2 border-dashed border-zinc-800 rounded-2xl">
+                    <p class="text-zinc-400 text-sm">Pilih genre di atas atau kloning dari link YouTube untuk memunculkan <span class="text-rose-400 font-semibold">10 Ide Judul Drama</span>.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== STEP 2: ALUR & SKENARIO SCENE ==================== -->
+        <section id="step-2" class="hidden space-y-6">
+            <div class="glass-panel rounded-2xl p-5 sm:p-6">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                    <div class="space-y-1.5 flex-1">
+                        <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-medium">
+                            <span>Prompt 2</span> • <span>Struktur Skenario, Hook & Dialog Bahasa Indonesia</span>
+                        </div>
+                        <h2 id="selected-story-title" class="text-xl sm:text-2xl font-bold text-white">Pilih Cerita Terlebih Dahulu</h2>
+                        <p id="selected-story-summary" class="text-sm text-zinc-400">Silakan pilih salah satu dari 10 ide cerita pada Tahap 1.</p>
+                    </div>
+
+                    <div class="flex flex-wrap items-end gap-3 bg-studio-950/70 p-3.5 rounded-xl border border-zinc-800">
+                        <div>
+                            <label class="block text-xs text-zinc-400 mb-1">Total Durasi</label>
+                            <select id="total-duration" class="bg-studio-900 border border-zinc-700 text-sm rounded-lg px-3 py-2 text-white focus:outline-none focus:border-amber-500">
+                                <option value="30 Detik">30 Detik</option>
+                                <option value="90 Detik">90 Detik</option>
+                                <option value="2 Menit" selected>2 Menit (120 Detik)</option>
+                                <option value="3 Menit">3 Menit (180 Detik)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-zinc-400 mb-1">Durasi Per Scene</label>
+                            <select id="scene-duration" class="bg-studio-900 border border-zinc-700 text-sm rounded-lg px-3 py-2 text-white focus:outline-none focus:border-amber-500">
+                                <option value="8 Detik">8 Detik / Scene</option>
+                                <option value="10 Detik">10 Detik / Scene</option>
+                                <option value="12 Detik">12 Detik / Scene</option>
+                                <option value="16 Detik" selected>16 Detik / Scene</option>
+                            </select>
+                        </div>
+                        <button onclick="generateScript()" id="btn-gen-script" class="px-5 py-2 rounded-lg bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-zinc-950 font-bold text-sm shadow-lg shadow-amber-600/20 transition flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                            </svg>
+                            <span>Buat Alur & Dialog</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading State Step 2 -->
+            <div id="loading-2" class="hidden py-16 text-center space-y-4">
+                <div class="w-12 h-12 border-4 border-amber-500/30 border-t-amber-500 rounded-full animate-spin mx-auto"></div>
+                <p class="text-zinc-300 font-medium">Menyusun skenario scene, hook kuat, dialog Bahasa Indonesia padat & musik dramatis...</p>
+            </div>
+
+            <!-- Script Output -->
+            <div id="script-container" class="space-y-4"></div>
+
+            <!-- Next Step Action -->
+            <div id="step-2-next" class="hidden flex justify-end pt-2">
+                <button onclick="switchTab(3)" class="px-6 py-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-semibold text-sm shadow-lg transition flex items-center gap-2">
+                    <span>Lanjut ke Tahap 3: Visual Karakter & Face-Lock</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                </button>
+            </div>
+        </section>
+
+        <!-- ==================== STEP 3: VISUAL KARAKTER, LOKASI & FACE-LOCK ==================== -->
+        <section id="step-3" class="hidden space-y-6">
+            
+            <!-- PANEL GLOBAL FACE-LOCK UPLOAD (SEPERTI V3.0) -->
+            <div class="glass-panel rounded-2xl p-5 sm:p-6 border border-cyan-500/35 bg-gradient-to-r from-studio-900 via-studio-900 to-cyan-950/30">
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
+                    <div class="flex items-start sm:items-center gap-4">
+                        <div id="face-preview-box" class="w-20 h-24 sm:w-24 sm:h-28 rounded-xl bg-studio-950 border-2 border-dashed border-cyan-500/50 flex flex-col items-center justify-center overflow-hidden shrink-0 relative">
+                            <svg class="w-7 h-7 text-cyan-400/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                            </svg>
+                            <span class="text-[10px] text-zinc-400 mt-1 text-center px-1">Belum ada foto</span>
+                        </div>
+                        <div class="space-y-1.5">
+                            <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-cyan-500/15 border border-cyan-500/30 text-cyan-300 text-[11px] font-semibold">
+                                <span>GLOBAL FACE-LOCK</span> • <span>Identitas Pemeran Utama</span>
+                            </div>
+                            <h3 class="text-base sm:text-lg font-bold text-white">Unggah Foto Referensi Wajah Utama (Face-Lock)</h3>
+                            <p class="text-xs sm:text-sm text-zinc-300 leading-relaxed max-w-2xl">
+                                Unggah foto wajah Anda (atau aktor pilihan). Sistem akan mengunci wajah tersebut ke karakter protagonis utama secara otomatis, atau bosq juga bisa unggah foto berbeda di tiap kartu karakter di bawah!
+                            </p>
+                            <div id="face-status-text" class="text-xs text-zinc-400">Status: Menggunakan wajah standar cerita (unggah foto untuk mengunci wajah utama).</div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap sm:flex-nowrap items-center gap-2.5 w-full md:w-auto">
+                        <input type="file" id="face-upload-input" accept="image/*" class="hidden" onchange="handleGlobalFaceUpload(event)">
+                        <button onclick="document.getElementById('face-upload-input').click()" class="flex-1 md:flex-none px-4 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-zinc-950 font-bold text-xs sm:text-sm shadow-lg shadow-cyan-600/20 transition flex items-center justify-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                            <span>Unggah Wajah Utama</span>
+                        </button>
+                        <button id="btn-clear-face" onclick="clearGlobalFaceReference()" class="hidden px-3 py-2.5 rounded-xl bg-zinc-800 hover:bg-rose-600/80 text-zinc-200 hover:text-white text-xs font-medium transition">
+                            Hapus
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Header Visual Generator -->
+            <div class="glass-panel rounded-2xl p-5 sm:p-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div class="space-y-1.5">
+                        <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium">
+                            <span>Prompt 3</span> • <span>Character & Environment Sheet</span>
+                        </div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-white">Gambar Referensi Karakter & Lokasi</h2>
+                        <p class="text-sm text-zinc-400">Karakter dibuat terpisah (full body, wajah realistis/face-lock, kostum konsisten) & lokasi dibuat luas tanpa manusia bergaya <span class="text-zinc-200 font-medium">Ultra Realistic Cinematic</span>.</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2.5">
+                        <button onclick="generateAllVisuals()" id="btn-gen-all-visuals" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-semibold text-sm shadow-lg shadow-emerald-600/20 transition flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            <span>Generate Semua Gambar</span>
+                        </button>
+                        <button onclick="generateMasterGrid()" id="btn-gen-grid" class="px-4 py-2.5 rounded-xl bg-studio-800 hover:bg-studio-700 border border-zinc-700 text-zinc-200 font-medium text-sm transition flex items-center gap-2">
+                            <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+                            <span>Lembar Grid Referensi</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Master Reference Sheet Preview -->
+            <div id="master-grid-wrapper" class="hidden glass-panel rounded-2xl p-5 space-y-3">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <span class="px-2.5 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 text-xs font-semibold">Lembar Referensi Gabungan</span>
+                        <span id="grid-timer" class="text-xs text-zinc-400"></span>
+                    </div>
+                    <a id="download-grid-btn" download="referensi-drama-grid.png" class="px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-xs text-white font-medium cursor-pointer">Unduh Grid</a>
+                </div>
+                <div id="master-grid-container" class="rounded-xl overflow-hidden bg-studio-950 border border-zinc-800 flex items-center justify-center min-h-[250px]">
+                    <!-- Image injected here -->
+                </div>
+            </div>
+
+            <!-- Characters Section -->
+            <div class="space-y-3">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <span class="w-2 h-6 rounded-full bg-rose-500"></span>
+                    <span>Daftar Karakter (Tampak Seluruh Badan / Full Body)</span>
+                </h3>
+                <div id="characters-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="col-span-full py-10 text-center border border-dashed border-zinc-800 rounded-2xl text-zinc-500 text-sm">
+                        Selesaikan Tahap 2 untuk memunculkan daftar karakter otomatis.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Locations Section -->
+            <div class="space-y-3 pt-4">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <span class="w-2 h-6 rounded-full bg-amber-500"></span>
+                    <span>Daftar Lokasi (Wide Shot Tanpa Manusia)</span>
+                </h3>
+                <div id="locations-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="col-span-full py-10 text-center border border-dashed border-zinc-800 rounded-2xl text-zinc-500 text-sm">
+                        Selesaikan Tahap 2 untuk memunculkan daftar lokasi otomatis.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Next Step Action -->
+            <div id="step-3-next" class="hidden flex justify-end pt-4">
+                <button onclick="switchTab(4)" class="px-6 py-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-semibold text-sm shadow-lg transition flex items-center gap-2">
+                    <span>Lanjut ke Tahap 4: Prompt Video Per Scene</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                </button>
+            </div>
+        </section>
+
+        <!-- ==================== STEP 4: PROMPT VIDEO SCENE ==================== -->
+        <section id="step-4" class="hidden space-y-6">
+            <div class="glass-panel rounded-2xl p-5 sm:p-6">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                    <div class="space-y-1.5 flex-1">
+                        <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-medium">
+                            <span>Prompt 4</span> • <span>Siap Generate Video AI (Maks 850 Karakter)</span>
+                        </div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-white">Prompt Video Setiap Scene</h2>
+                        <p class="text-sm text-zinc-400">Setiap kotak memuat gerakan karakter, ekspresi, dialog Bahasa Indonesia, gerakan kamera, SFX, dan musik dramatis dalam batas ≤ 850 karakter.</p>
+                    </div>
+
+                    <div class="flex flex-wrap items-end gap-3 bg-studio-950/70 p-3.5 rounded-xl border border-zinc-800">
+                        <div>
+                            <label class="block text-xs text-zinc-400 mb-1">Rasio Video</label>
+                            <select id="video-aspect-ratio" class="bg-studio-900 border border-zinc-700 text-sm rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-500">
+                                <option value="16:9" selected>16:9 (Horizontal - YouTube)</option>
+                                <option value="9:16">9:16 (Vertikal - Reels / Shorts)</option>
+                            </select>
+                        </div>
+                        <button onclick="generateVideoPrompts()" id="btn-gen-video-prompts" class="px-5 py-2 rounded-lg bg-gradient-to-r from-purple-600 via-rose-600 to-amber-500 hover:from-purple-500 hover:to-amber-400 text-white font-semibold text-sm shadow-lg shadow-purple-600/25 transition flex items-center gap-2 shrink-0">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                            <span>Generate Semua Prompt Video</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading State Step 4 -->
+            <div id="loading-4" class="hidden py-16 text-center space-y-4">
+                <div class="w-12 h-12 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin mx-auto"></div>
+                <p class="text-zinc-300 font-medium">Menyusun prompt sinematik ≤ 850 karakter dengan audio, kamera & dialog Indonesia...</p>
+            </div>
+
+            <!-- Video Prompt Boxes -->
+            <div id="video-prompts-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="col-span-full py-12 text-center border-2 border-dashed border-zinc-800 rounded-2xl text-zinc-400 text-sm">
+                    Selesaikan Tahap 2 lalu klik tombol <span class="text-purple-400 font-semibold">"Generate Semua Prompt Video"</span>.
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal: Master Template 4 Prompt -->
+    <div id="prompt-guide-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-studio-900 border border-zinc-700 rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl">
+            <div class="p-5 border-b border-zinc-800 flex items-center justify-between">
+                <h3 class="font-bold text-lg text-white">Master Template 4 Prompt Drama AI v3.0</h3>
+                <button onclick="closePromptGuideModal()" class="text-zinc-400 hover:text-white p-1">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <div class="p-5 overflow-y-auto space-y-4 text-sm">
+                <div class="bg-studio-950 p-4 rounded-xl border border-zinc-800 space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold text-rose-400">Prompt 1 (Ide Judul & Kloning Link YouTube)</span>
+                        <button onclick="copyRawText('raw-p1')" class="text-xs px-2.5 py-1 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-200">Copy</button>
+                    </div>
+                    <p id="raw-p1" class="text-zinc-300 leading-relaxed">Buatkan 10 ide judul drama AI Indonesia/China yang menarik, penuh emosi, konflik kuat, dan plot twist mengejutkan. Ending harus mengharukan atau membuat penonton puas. Sertakan ringkasan singkat setiap cerita. Saya ingin memilih satu ide terlebih dahulu.</p>
+                </div>
+
+                <div class="bg-studio-950 p-4 rounded-xl border border-zinc-800 space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold text-amber-400">Prompt 2 (Alur & Skenario Scene)</span>
+                        <button onclick="copyRawText('raw-p2')" class="text-xs px-2.5 py-1 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-200">Copy</button>
+                    </div>
+                    <p id="raw-p2" class="text-zinc-300 leading-relaxed">Saya pilih cerita nomor [....]. Buatkan alur drama berdurasi [30 detik/90 detik/2 menit/3 menit], dibagi menjadi scene berdurasi [8/10/12/16 detik]. Buat hook kuat, dialog padat, konflik emosional, plot twist, dan ending berkesan. Semua dialog wajib Bahasa Indonesia.</p>
+                </div>
+
+                <div class="bg-studio-950 p-4 rounded-xl border border-zinc-800 space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold text-emerald-400">Prompt 3 (Visual Karakter, Face-Lock & Lokasi)</span>
+                        <button onclick="copyRawText('raw-p3')" class="text-xs px-2.5 py-1 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-200">Copy</button>
+                    </div>
+                    <p id="raw-p3" class="text-zinc-300 leading-relaxed">Berdasarkan cerita tadi dan referensi foto wajah (Face-Lock), buatkan gambar semua karakter dan lokasi. Karakter: setiap orang dibuat terpisah, tampak seluruh badan, wajah realistis, pakaian sesuai peran. Lokasi: setiap tempat dibuat terpisah, tanpa manusia, tampilkan lingkungan secara luas. Gunakan gaya ultra realistic cinematic. Jaga konsistensi wajah, pakaian, dan desain lokasi di seluruh scene.</p>
+                </div>
+
+                <div class="bg-studio-950 p-4 rounded-xl border border-zinc-800 space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold text-purple-400">Prompt 4 (Prompt Video Per Scene ≤ 850 Karakter)</span>
+                        <button onclick="copyRawText('raw-p4')" class="text-xs px-2.5 py-1 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-200">Copy</button>
+                    </div>
+                    <p id="raw-p4" class="text-zinc-300 leading-relaxed">Buatkan prompt video setiap scene yang mudah di copy berdasarkan cerita tadi. Durasi [8/10/12/16 detik] per scene, rasio [16:9 / 9:16]. Buat dalam 850 karakter saja. Gunakan gambar karakter dan lokasi sebagai referensi. Setiap prompt berisi gerakan karakter, ekspresi, dialog Bahasa Indonesia, gerakan kamera, sound effect, dan musik dramatis. Jaga wajah dan pakaian tetap konsisten. Pisahkan setiap scene dalam kotak agar mudah saya copy dan generate.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Toast Notification -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-zinc-800 border border-zinc-700 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2.5 text-sm font-medium">
+        <span id="toast-icon" class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+        <span id="toast-msg">Berhasil disalin!</span>
+    </div>
+
+    <script>
+        // ==================== STATE MANAGEMENT ====================
+        const apiKey = ""; // Otomatis diisi oleh environment saat runtime
+        const appState = {
+            ideas: [],
+            selectedIdea: null,
+            scriptData: null,
+            characterImages: {},
+            characterFaceRefs: {}, // index -> { mimeType, base64, previewUrl }
+            locationImages: {},
+            videoPrompts: [],
+            globalFaceBase64: null,
+            globalFaceMimeType: null
+        };
+
+        // ==================== UTILITIES ====================
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const msg = document.getElementById('toast-msg');
+            const icon = document.getElementById('toast-icon');
+            msg.textContent = message;
+            icon.className = `w-2.5 h-2.5 rounded-full ${type === 'error' ? 'bg-rose-500' : 'bg-emerald-400'}`;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        function copyTextToClipboard(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showToast('Teks berhasil disalin ke clipboard!');
+            } catch (err) {
+                showToast('Gagal menyalin teks.', 'error');
+            }
+            document.body.removeChild(textarea);
+        }
+
+        function copyRawText(elementId) {
+            const text = document.getElementById(elementId).innerText;
+            copyTextToClipboard(text);
+        }
+
+        function openPromptGuideModal() {
+            document.getElementById('prompt-guide-modal').classList.remove('hidden');
+        }
+
+        function closePromptGuideModal() {
+            document.getElementById('prompt-guide-modal').classList.add('hidden');
+        }
+
+        function switchTab(stepNum) {
+            for (let i = 1; i <= 4; i++) {
+                const section = document.getElementById(`step-${i}`);
+                const btn = document.getElementById(`tab-btn-${i}`);
+                if (i === stepNum) {
+                    section.classList.remove('hidden');
+                    btn.classList.add('step-active');
+                    btn.classList.remove('bg-studio-900/60');
+                } else {
+                    section.classList.add('hidden');
+                    btn.classList.remove('step-active');
+                    btn.classList.add('bg-studio-900/60');
+                }
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function resetProject() {
+            appState.ideas = [];
+            appState.selectedIdea = null;
+            appState.scriptData = null;
+            appState.characterImages = {};
+            appState.characterFaceRefs = {};
+            appState.locationImages = {};
+            appState.videoPrompts = [];
+            document.getElementById('ideas-container').innerHTML = `<div class="col-span-full py-12 text-center border-2 border-dashed border-zinc-800 rounded-2xl"><p class="text-zinc-400 text-sm">Pilih genre di atas atau kloning dari link YouTube untuk memunculkan <span class="text-rose-400 font-semibold">10 Ide Judul Drama</span>.</p></div>`;
+            document.getElementById('script-container').innerHTML = '';
+            document.getElementById('characters-grid').innerHTML = `<div class="col-span-full py-10 text-center border border-dashed border-zinc-800 rounded-2xl text-zinc-500 text-sm">Selesaikan Tahap 2 untuk memunculkan daftar karakter otomatis.</div>`;
+            document.getElementById('locations-grid').innerHTML = `<div class="col-span-full py-10 text-center border border-dashed border-zinc-800 rounded-2xl text-zinc-500 text-sm">Selesaikan Tahap 2 untuk memunculkan daftar lokasi otomatis.</div>`;
+            document.getElementById('video-prompts-container').innerHTML = `<div class="col-span-full py-12 text-center border-2 border-dashed border-zinc-800 rounded-2xl text-zinc-400 text-sm">Selesaikan Tahap 2 lalu klik tombol <span class="text-purple-400 font-semibold">"Generate Semua Prompt Video"</span>.</div>`;
+            document.getElementById('master-grid-wrapper').classList.add('hidden');
+            document.getElementById('step-2-next').classList.add('hidden');
+            document.getElementById('step-3-next').classList.add('hidden');
+            switchTab(1);
+            showToast('Studio direset untuk proyek baru.');
+        }
+
+        // ==================== GLOBAL & PER-CHARACTER FACE-LOCK HANDLERS ====================
+        function handleGlobalFaceUpload(event) {
+            const file = event.target.files?.[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const dataUrl = e.target.result;
+                const commaIdx = dataUrl.indexOf(',');
+                const meta = dataUrl.substring(0, commaIdx);
+                const base64Data = dataUrl.substring(commaIdx + 1);
+                const mimeMatch = meta.match(/data:(.*?);base64/);
+
+                appState.globalFaceBase64 = base64Data;
+                appState.globalFaceMimeType = mimeMatch ? mimeMatch[1] : 'image/png';
+
+                const previewBox = document.getElementById('face-preview-box');
+                previewBox.innerHTML = `<img src="${dataUrl}" alt="Referensi Wajah Utama" class="w-full h-full object-cover">`;
+                previewBox.classList.remove('border-dashed');
+                previewBox.classList.add('border-solid', 'border-cyan-400');
+
+                document.getElementById('face-status-text').innerHTML = `<span class="text-emerald-400 font-semibold">✓ Foto Wajah Utama Terkunci (${file.name})</span> — Otomatis diterapkan ke tokoh protagonis!`;
+                document.getElementById('btn-clear-face').classList.remove('hidden');
+                showToast('Foto wajah utama berhasil dikunci!');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function clearGlobalFaceReference() {
+            appState.globalFaceBase64 = null;
+            appState.globalFaceMimeType = null;
+            document.getElementById('face-upload-input').value = '';
+            const previewBox = document.getElementById('face-preview-box');
+            previewBox.innerHTML = `
+                <svg class="w-7 h-7 text-cyan-400/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </svg>
+                <span class="text-[10px] text-zinc-400 mt-1 text-center px-1">Belum ada foto</span>
+            `;
+            previewBox.classList.add('border-dashed');
+            previewBox.classList.remove('border-solid', 'border-cyan-400');
+            document.getElementById('face-status-text').textContent = 'Status: Menggunakan wajah standar cerita (unggah foto untuk mengunci wajah utama).';
+            document.getElementById('btn-clear-face').classList.add('hidden');
+            showToast('Referensi foto wajah utama dihapus.');
+        }
+
+        function handleCharacterFaceUpload(event, idx) {
+            const file = event.target.files?.[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const dataUrl = e.target.result;
+                const commaIdx = dataUrl.indexOf(',');
+                const meta = dataUrl.substring(0, commaIdx);
+                const base64Data = dataUrl.substring(commaIdx + 1);
+                const mimeMatch = meta.match(/data:(.*?);base64/);
+
+                appState.characterFaceRefs[idx] = {
+                    mimeType: mimeMatch ? mimeMatch[1] : 'image/png',
+                    base64: base64Data,
+                    previewUrl: dataUrl
+                };
+
+                const wrap = document.getElementById(`face-preview-wrap-${idx}`);
+                const clearBtn = document.getElementById(`clear-face-${idx}`);
+                clearBtn.classList.remove('hidden');
+                wrap.innerHTML = `
+                    <img src="${dataUrl}" class="w-9 h-9 rounded-lg object-cover border border-cyan-400 shrink-0" alt="Ref Wajah">
+                    <div class="flex-1 min-w-0">
+                        <p class="text-[11px] text-emerald-400 font-medium truncate">Wajah Khusus Terpasang!</p>
+                        <label class="text-[10px] text-zinc-400 hover:text-white cursor-pointer underline">
+                            Ganti foto
+                            <input type="file" accept="image/*" onchange="handleCharacterFaceUpload(event, ${idx})" class="hidden">
+                        </label>
+                    </div>
+                `;
+                showToast(`Foto wajah khusus terpasang untuk ${appState.scriptData.characters[idx].nama}!`);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function clearCharacterFace(idx) {
+            delete appState.characterFaceRefs[idx];
+            const wrap = document.getElementById(`face-preview-wrap-${idx}`);
+            const clearBtn = document.getElementById(`clear-face-${idx}`);
+            clearBtn.classList.add('hidden');
+            wrap.innerHTML = `
+                <label class="flex-1 cursor-pointer py-1.5 px-2.5 rounded-lg bg-zinc-800/90 hover:bg-zinc-700 border border-dashed border-zinc-600 text-[11px] text-zinc-300 text-center transition truncate">
+                    <span>+ Upload Wajah Khusus</span>
+                    <input type="file" accept="image/*" onchange="handleCharacterFaceUpload(event, ${idx})" class="hidden">
+                </label>
+            `;
+            showToast('Referensi wajah khusus dihapus.');
+        }
+
+        // Exponential Backoff Fetch Helper
+        async function fetchWithRetry(url, options, maxRetries = 4) {
+            let delay = 1000;
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return await response.json();
+                } catch (err) {
+                    if (i === maxRetries - 1) throw err;
+                    await new Promise(res => setTimeout(res, delay));
+                    delay *= 2;
+                }
+            }
+        }
+
+        // ==================== STEP 1: GENERATE IDEAS ====================
+        async function generateIdeas() {
+            const btn = document.getElementById('btn-gen-ideas');
+            const loader = document.getElementById('loading-1');
+            const loaderText = document.getElementById('loading-1-text');
+            const container = document.getElementById('ideas-container');
+            const genre = document.getElementById('genre-select').value;
+            const customTheme = document.getElementById('custom-theme').value.trim();
+
+            btn.disabled = true;
+            btn.classList.add('opacity-50');
+            loader.classList.remove('hidden');
+            loaderText.textContent = "Meracik 10 ide cerita drama penuh emosi & plot twist...";
+            container.innerHTML = '';
+
+            const promptText = `Buatkan 10 ide judul drama AI Indonesia/China yang menarik, penuh emosi, konflik kuat, dan plot twist mengejutkan. Ending harus mengharukan atau membuat penonton puas. Sertakan ringkasan singkat setiap cerita dalam Bahasa Indonesia.
+            Nuansa Genre: ${genre}. ${customTheme ? `Tema/Kata Kunci Tambahan: ${customTheme}.` : ''}`;
+
+            const payload = {
+                contents: [{ parts: [{ text: promptText }] }],
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: {
+                        type: "ARRAY",
+                        items: {
+                            type: "OBJECT",
+                            properties: {
+                                nomor: { type: "INTEGER" },
+                                judul: { type: "STRING" },
+                                kategori: { type: "STRING" },
+                                ringkasan: { type: "STRING" },
+                                plotTwist: { type: "STRING" }
+                            },
+                            required: ["nomor", "judul", "kategori", "ringkasan", "plotTwist"]
+                        }
+                    }
+                }
+            };
+
+            try {
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+                const data = await fetchWithRetry(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const rawJson = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                appState.ideas = JSON.parse(rawJson);
+                renderIdeas();
+                showToast('10 Ide Judul Drama berhasil dibuat!');
+            } catch (error) {
+                console.error(error);
+                container.innerHTML = `<div class="col-span-full p-6 bg-rose-950/40 border border-rose-500/40 rounded-2xl text-center text-rose-300 text-sm">Gagal memuat ide cerita. Silakan coba klik tombol Generate lagi.</div>`;
+                showToast('Gagal memuat ide.', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.classList.remove('opacity-50');
+                loader.classList.add('hidden');
+            }
+        }
+
+        // ==================== YOUTUBE LINK CLONING FEATURE ====================
+        async function cloneYouTubeIdea() {
+            const urlInput = document.getElementById('youtube-url-input').value.trim();
+            if (!urlInput) {
+                showToast('Masukkan link YouTube terlebih dahulu!', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('btn-clone-yt');
+            const loader = document.getElementById('loading-1');
+            const loaderText = document.getElementById('loading-1-text');
+            const container = document.getElementById('ideas-container');
+            const genre = document.getElementById('genre-select').value;
+
+            btn.disabled = true;
+            btn.classList.add('opacity-50');
+            loader.classList.remove('hidden');
+            loaderText.textContent = `Menganalisis link video ${urlInput} & merancang 10 ide variasi drama viral...`;
+            container.innerHTML = '';
+
+            const promptText = `Analisis dan kloning gaya cerita, hook pembuka, dinamika konflik, dan alur viral dari tautan YouTube berikut: "${urlInput}". 
+            Adaptasikan ke dalam nuansa ${genre} untuk micro-drama Reels/Shorts.
+            Buatkan 10 ide judul drama AI Indonesia/China baru yang terinspirasi dari formula video tersebut, penuh emosi, konflik kuat, plot twist mengejutkan, dan ending mengharukan atau memuaskan penonton.`;
+
+            const payload = {
+                contents: [{ parts: [{ text: promptText }] }],
+                tools: [{ "google_search": {} }],
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: {
+                        type: "ARRAY",
+                        items: {
+                            type: "OBJECT",
+                            properties: {
+                                nomor: { type: "INTEGER" },
+                                judul: { type: "STRING" },
+                                kategori: { type: "STRING" },
+                                ringkasan: { type: "STRING" },
+                                plotTwist: { type: "STRING" }
+                            },
+                            required: ["nomor", "judul", "kategori", "ringkasan", "plotTwist"]
+                        }
+                    }
+                }
+            };
+
+            try {
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+                const data = await fetchWithRetry(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const rawJson = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                appState.ideas = JSON.parse(rawJson);
+                renderIdeas();
+                showToast('Berhasil mengkloning & merancang 10 ide dari link YouTube!');
+            } catch (error) {
+                console.error(error);
+                container.innerHTML = `<div class="col-span-full p-6 bg-rose-950/40 border border-rose-500/40 rounded-2xl text-center text-rose-300 text-sm">Gagal mengkloning link YouTube. Pastikan link valid dan coba lagi.</div>`;
+                showToast('Gagal mengkloning video YouTube.', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.classList.remove('opacity-50');
+                loader.classList.add('hidden');
+            }
+        }
+
+        function renderIdeas() {
+            const container = document.getElementById('ideas-container');
+            container.innerHTML = appState.ideas.map((item, idx) => `
+                <div class="glass-panel rounded-2xl p-5 border border-zinc-800 hover:border-rose-500/60 transition flex flex-col justify-between group">
+                    <div class="space-y-2.5">
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="px-2.5 py-0.5 rounded-md bg-rose-500/15 text-rose-400 font-bold text-xs">Cerita #${item.nomor || idx + 1}</span>
+                            <span class="text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-zinc-800 text-zinc-300">${item.kategori}</span>
+                        </div>
+                        <h3 class="font-bold text-base sm:text-lg text-white group-hover:text-amber-300 transition">${item.judul}</h3>
+                        <p class="text-sm text-zinc-300 leading-relaxed">${item.ringkasan}</p>
+                        <div class="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-200/90">
+                            <span class="font-semibold text-amber-400">Plot Twist:</span> ${item.plotTwist}
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-zinc-800/80 flex justify-end">
+                        <button onclick="selectIdea(${idx})" class="w-full sm:w-auto px-4 py-2 rounded-xl bg-zinc-800 hover:bg-rose-600 text-white text-xs font-semibold transition flex items-center justify-center gap-1.5">
+                            <span>Pilih Cerita Ini</span>
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function selectIdea(index) {
+            appState.selectedIdea = appState.ideas[index];
+            document.getElementById('selected-story-title').textContent = `#${appState.selectedIdea.nomor || index + 1}: ${appState.selectedIdea.judul}`;
+            document.getElementById('selected-story-summary').textContent = `${appState.selectedIdea.ringkasan} (Plot Twist: ${appState.selectedIdea.plotTwist})`;
+            document.getElementById('badge-1').classList.replace('bg-rose-400', 'bg-emerald-400');
+            document.getElementById('badge-2').classList.replace('bg-zinc-700', 'bg-amber-400');
+            switchTab(2);
+            showToast(`Cerita #${appState.selectedIdea.nomor || index + 1} dipilih!`);
+        }
+
+        // ==================== STEP 2: ALUR & SKENARIO ====================
+        async function generateScript() {
+            if (!appState.selectedIdea) {
+                showToast('Pilih ide cerita di Tahap 1 terlebih dahulu!', 'error');
+                switchTab(1);
+                return;
+            }
+
+            const btn = document.getElementById('btn-gen-script');
+            const loader = document.getElementById('loading-2');
+            const container = document.getElementById('script-container');
+            const totalDuration = document.getElementById('total-duration').value;
+            const sceneDuration = document.getElementById('scene-duration').value;
+
+            btn.disabled = true;
+            btn.classList.add('opacity-50');
+            loader.classList.remove('hidden');
+            container.innerHTML = '';
+
+            const promptText = `Saya pilih cerita nomor ${appState.selectedIdea.nomor}: "${appState.selectedIdea.judul}".
+            Ringkasan: ${appState.selectedIdea.ringkasan}. Plot Twist: ${appState.selectedIdea.plotTwist}.
+            Buatkan alur drama berdurasi ${totalDuration}, dibagi menjadi scene berdurasi ${sceneDuration}.
+            Buat hook kuat di scene pembuka, dialog padat penuh emosi, konflik emosional tajam, plot twist mengejutkan, dan ending berkesan.
+            Semua dialog WAJIB Bahasa Indonesia yang natural dan dramatis.
+            Sertakan juga daftar lengkap semua karakter (beserta deskripsi visual bahasa Inggris untuk konsistensi pakaian & wajah) dan lokasi (wide shot kosong tanpa manusia).`;
+
+            const payload = {
+                contents: [{ parts: [{ text: promptText }] }],
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: {
+                        type: "OBJECT",
+                        properties: {
+                            scenes: {
+                                type: "ARRAY",
+                                items: {
+                                    type: "OBJECT",
+                                    properties: {
+                                        sceneNumber: { type: "INTEGER" },
+                                        durasi: { type: "STRING" },
+                                        lokasiNama: { type: "STRING" },
+                                        karakterTerlibat: { type: "ARRAY", items: { type: "STRING" } },
+                                        aksiVisual: { type: "STRING" },
+                                        dialogIndonesia: { type: "STRING" },
+                                        emosiDanMusik: { type: "STRING" }
+                                    },
+                                    required: ["sceneNumber", "durasi", "lokasiNama", "karakterTerlibat", "aksiVisual", "dialogIndonesia", "emosiDanMusik"]
+                                }
+                            },
+                            characters: {
+                                type: "ARRAY",
+                                items: {
+                                    type: "OBJECT",
+                                    properties: {
+                                        nama: { type: "STRING" },
+                                        peran: { type: "STRING" },
+                                        isProtagonis: { type: "BOOLEAN", description: "True if this character is the main protagonist/lead role." },
+                                        deskripsiVisualInggris: { type: "STRING", description: "Detailed English visual prompt for full-body ultra realistic cinematic character including exact age, ethnicity, hair, facial features, and detailed outfit/costume." }
+                                    },
+                                    required: ["nama", "peran", "isProtagonis", "deskripsiVisualInggris"]
+                                }
+                            },
+                            locations: {
+                                type: "ARRAY",
+                                items: {
+                                    type: "OBJECT",
+                                    properties: {
+                                        namaLokasi: { type: "STRING" },
+                                        deskripsiSuasana: { type: "STRING" },
+                                        deskripsiVisualInggris: { type: "STRING", description: "Detailed English visual prompt for wide-angle ultra realistic cinematic empty location with zero humans." }
+                                    },
+                                    required: ["namaLokasi", "deskripsiSuasana", "deskripsiVisualInggris"]
+                                }
+                            }
+                        },
+                        required: ["scenes", "characters", "locations"]
+                    }
+                }
+            };
+
+            try {
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+                const data = await fetchWithRetry(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const rawJson = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                appState.scriptData = JSON.parse(rawJson);
+                appState.characterImages = {};
+                appState.characterFaceRefs = {};
+                appState.locationImages = {};
+                renderScript();
+                prepareStep3Cards();
+                document.getElementById('step-2-next').classList.remove('hidden');
+                document.getElementById('badge-2').classList.replace('bg-amber-400', 'bg-emerald-400');
+                showToast('Skenario adegan & dialog siap!');
+            } catch (error) {
+                console.error(error);
+                container.innerHTML = `<div class="p-6 bg-rose-950/40 border border-rose-500/40 rounded-2xl text-center text-rose-300 text-sm">Gagal menyusun skenario. Silakan klik kembali tombol "Buat Alur & Dialog".</div>`;
+                showToast('Gagal membuat skenario.', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.classList.remove('opacity-50');
+                loader.classList.add('hidden');
+            }
+        }
+
+        function renderScript() {
+            const container = document.getElementById('script-container');
+            if (!appState.scriptData) return;
+
+            container.innerHTML = appState.scriptData.scenes.map(scene => `
+                <div class="glass-panel rounded-2xl p-5 border border-zinc-800 space-y-3">
+                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-800 pb-3">
+                        <div class="flex items-center gap-2.5">
+                            <span class="px-3 py-1 rounded-lg bg-amber-500 text-zinc-950 font-extrabold text-xs">SCENE ${scene.sceneNumber}</span>
+                            <span class="text-xs font-medium text-zinc-400">⏱ ${scene.durasi}</span>
+                            <span class="text-xs font-medium px-2.5 py-0.5 rounded-md bg-zinc-800 text-zinc-300">📍 ${scene.lokasiNama}</span>
+                        </div>
+                        <div class="text-xs text-zinc-400">
+                            Karakter: <span class="text-zinc-200 font-medium">${scene.karakterTerlibat.join(', ')}</span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div class="space-y-1">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-zinc-400">Aksi Visual, Ekspresi & Kamera</span>
+                            <p class="text-zinc-200 leading-relaxed">${scene.aksiVisual}</p>
+                        </div>
+                        <div class="space-y-1 bg-studio-950/80 p-3.5 rounded-xl border border-zinc-800/90">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-rose-400">Dialog Bahasa Indonesia</span>
+                            <p class="text-white font-medium italic leading-relaxed">"${scene.dialogIndonesia}"</p>
+                            <p class="text-xs text-zinc-400 pt-1">🎵 ${scene.emosiDanMusik}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ==================== STEP 3: VISUALS & FACE-LOCK ====================
+        function prepareStep3Cards() {
+            if (!appState.scriptData) return;
+
+            const charGrid = document.getElementById('characters-grid');
+            charGrid.innerHTML = appState.scriptData.characters.map((char, idx) => {
+                const isLead = char.isProtagonis || idx === 0;
+                return `
+                <div class="glass-panel rounded-2xl overflow-hidden border border-zinc-800 flex flex-col">
+                    <div id="char-img-box-${idx}" class="aspect-[3/4] bg-studio-950 relative flex items-center justify-center border-b border-zinc-800 overflow-hidden">
+                        <div class="text-center p-4 space-y-2">
+                            ${isLead ? `<span class="inline-block px-2 py-0.5 rounded bg-cyan-500/15 text-cyan-300 text-[10px] font-semibold">Pemeran Utama (Global Face-Lock)</span>` : `<span class="inline-block px-2 py-0.5 rounded bg-rose-500/15 text-rose-300 text-[10px] font-semibold">Karakter Pendukung</span>`}
+                            <p class="text-xs text-zinc-500">Belum digenerate</p>
+                            <button onclick="generateSingleCharacter(${idx})" class="px-3.5 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-xs font-semibold transition">
+                                Generate Visual
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
+                        <div>
+                            <div class="flex items-center justify-between gap-2">
+                                <h4 class="font-bold text-white text-base">${char.nama}</h4>
+                                <span class="text-[11px] px-2 py-0.5 rounded bg-rose-500/15 text-rose-300 font-medium">${char.peran}</span>
+                            </div>
+                            <p class="text-xs text-zinc-400 mt-1.5 line-clamp-3">${char.deskripsiVisualInggris}</p>
+                        </div>
+
+                        <!-- Upload Referensi Wajah Khusus Per Karakter -->
+                        <div class="p-2.5 rounded-xl bg-studio-950/90 border border-zinc-800 space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] font-semibold text-cyan-400 flex items-center gap-1">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                    Ganti Wajah Karakter Ini
+                                </span>
+                                <button id="clear-face-${idx}" onclick="clearCharacterFace(${idx})" class="hidden text-[10px] text-rose-400 hover:underline">Hapus</button>
+                            </div>
+                            <div id="face-preview-wrap-${idx}" class="flex items-center gap-2">
+                                <label class="flex-1 cursor-pointer py-1.5 px-2.5 rounded-lg bg-zinc-800/90 hover:bg-zinc-700 border border-dashed border-zinc-600 text-[11px] text-zinc-300 text-center transition truncate">
+                                    <span>+ Upload Wajah Khusus</span>
+                                    <input type="file" accept="image/*" onchange="handleCharacterFaceUpload(event, ${idx})" class="hidden">
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2 pt-2 border-t border-zinc-800/80">
+                            <button onclick="generateSingleCharacter(${idx})" class="flex-1 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-xs text-zinc-200 font-medium transition">Regenerate</button>
+                            <button onclick="copyTextToClipboard(\`${char.deskripsiVisualInggris.replace(/`/g, "'")}\`)" class="px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-xs text-zinc-200 font-medium transition">Copy Prompt</button>
+                        </div>
+                    </div>
+                </div>
+                `;
+            }).join('');
+
+            const locGrid = document.getElementById('locations-grid');
+            locGrid.innerHTML = appState.scriptData.locations.map((loc, idx) => `
+                <div class="glass-panel rounded-2xl overflow-hidden border border-zinc-800 flex flex-col">
+                    <div id="loc-img-box-${idx}" class="aspect-video bg-studio-950 relative flex items-center justify-center border-b border-zinc-800 overflow-hidden">
+                        <div class="text-center p-4 space-y-2">
+                            <p class="text-xs text-zinc-500">Belum digenerate</p>
+                            <button onclick="generateSingleLocation(${idx})" class="px-3.5 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-zinc-950 text-xs font-bold transition">
+                                Generate Lokasi
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
+                        <div>
+                            <h4 class="font-bold text-white text-base">${loc.namaLokasi}</h4>
+                            <p class="text-xs text-zinc-300 mt-1">${loc.deskripsiSuasana}</p>
+                            <p class="text-[11px] text-zinc-500 mt-1 line-clamp-2">${loc.deskripsiVisualInggris}</p>
+                        </div>
+                        <div class="flex items-center gap-2 pt-2 border-t border-zinc-800/80">
+                            <button onclick="generateSingleLocation(${idx})" class="flex-1 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-xs text-zinc-200 font-medium transition">Regenerate</button>
+                            <button onclick="copyTextToClipboard(\`${loc.deskripsiVisualInggris.replace(/`/g, "'")}\`)" class="px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-xs text-zinc-200 font-medium transition">Copy Prompt</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('step-3-next').classList.remove('hidden');
+        }
+
+        async function callImageModel(promptText, aspectRatio = "3:4", faceRefObj = null) {
+            const parts = [{ text: promptText }];
+            if (faceRefObj && faceRefObj.base64) {
+                parts.push({
+                    inlineData: {
+                        mimeType: faceRefObj.mimeType || "image/png",
+                        data: faceRefObj.base64
+                    }
+                });
+            }
+
+            const geminiPayload = {
+                contents: [{
+                    role: 'user',
+                    parts: parts
+                }],
+                generationConfig: {
+                    responseModalities: ['TEXT', 'IMAGE'],
+                    imageConfig: { aspectRatio: aspectRatio }
+                }
+            };
+
+            const geminiModels = [
+                'gemini-2.5-flash-image-preview',
+                'gemini-2.0-flash-exp-image-generation',
+                'gemini-3.1-flash-image'
+            ];
+
+            for (const modelName of geminiModels) {
+                try {
+                    const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+                    const data = await fetchWithRetry(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(geminiPayload)
+                    }, 2);
+                    const part = data?.candidates?.[0]?.content?.parts?.find(p => p.inlineData && p.inlineData.data);
+                    if (part) {
+                        return `data:${part.inlineData.mimeType || 'image/png'};base64,${part.inlineData.data}`;
+                    }
+                } catch (e) {
+                    console.warn(`Fallback dari model ${modelName}:`, e);
+                }
+            }
+
+            // Fallback terakhir ke Imagen 3 apabila tidak menggunakan referensi gambar inline
+            const imagenUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
+            const imagenPayload = {
+                instances: [{ prompt: promptText }],
+                parameters: {
+                    sampleCount: 1,
+                    aspectRatio: aspectRatio
+                }
+            };
+            const imagenData = await fetchWithRetry(imagenUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(imagenPayload)
+            }, 2);
+            const b64 = imagenData?.predictions?.[0]?.bytesBase64Encoded;
+            if (b64) {
+                return `data:image/png;base64,${b64}`;
+            }
+
+            throw new Error("No image returned");
+        }
+
+        async function generateSingleCharacter(idx) {
+            const char = appState.scriptData.characters[idx];
+            const box = document.getElementById(`char-img-box-${idx}`);
+            const isLead = char.isProtagonis || idx === 0;
+
+            // Prioritas: Wajah khusus karakter -> Wajah Global Utama (jika karakter protagonis)
+            let activeFaceRef = appState.characterFaceRefs[idx] || null;
+            if (!activeFaceRef && isLead && appState.globalFaceBase64) {
+                activeFaceRef = {
+                    base64: appState.globalFaceBase64,
+                    mimeType: appState.globalFaceMimeType
+                };
+            }
+
+            box.innerHTML = `<div class="flex flex-col items-center gap-2"><div class="w-8 h-8 border-3 border-rose-500/30 border-t-rose-500 rounded-full animate-spin"></div><span class="text-xs text-zinc-400">${activeFaceRef ? 'Menerapkan Face-Lock wajah Anda...' : 'Merender karakter...'}</span></div>`;
+
+            const faceInstruction = activeFaceRef
+                ? `CRITICAL IDENTITY LOCK: Preserve the exact facial identity, facial structure, eyes, nose, glasses (if worn), and likeness of the person in the provided reference photo. Seamlessly place this exact person's face onto the character body. `
+                : '';
+
+            const prompt = `${faceInstruction}Full body portrait shot from head to toe, single person isolated, ${char.deskripsiVisualInggris}, ultra realistic cinematic drama photography, 8k resolution, sharp realistic facial details, intricate period or modern costume texture, dramatic film lighting, neutral studio background for character reference sheet, no text, no watermark.`;
+
+            try {
+                const imgUrl = await callImageModel(prompt, "3:4", activeFaceRef);
+                appState.characterImages[idx] = imgUrl;
+                box.innerHTML = `
+                    <img src="${imgUrl}" alt="${char.nama}" class="w-full h-full object-cover">
+                    ${activeFaceRef ? `<span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded bg-cyan-600/90 text-white text-[10px] font-bold backdrop-blur-sm">FACE-LOCK</span>` : ''}
+                    <a href="${imgUrl}" download="karakter-${char.nama.replace(/\s+/g, '-')}.png" class="absolute bottom-2.5 right-2.5 px-2.5 py-1 rounded-lg bg-black/75 hover:bg-black text-white text-[11px] font-medium backdrop-blur-sm border border-white/10">Unduh</a>
+                `;
+            } catch (err) {
+                console.error(err);
+                box.innerHTML = `<div class="text-center p-4"><p class="text-xs text-rose-400 mb-2">Gagal memuat visual</p><button onclick="generateSingleCharacter(${idx})" class="px-3 py-1 rounded bg-zinc-800 text-xs text-white">Coba Lagi</button></div>`;
+            }
+        }
+
+        async function generateSingleLocation(idx) {
+            const loc = appState.scriptData.locations[idx];
+            const box = document.getElementById(`loc-img-box-${idx}`);
+            box.innerHTML = `<div class="flex flex-col items-center gap-2"><div class="w-8 h-8 border-3 border-amber-500/30 border-t-amber-500 rounded-full animate-spin"></div><span class="text-xs text-zinc-400">Merender lokasi luas...</span></div>`;
+
+            const prompt = `Wide angle cinematic establishing shot, completely empty environment with NO humans, NO people, zero figures, ${loc.deskripsiVisualInggris}, ultra realistic cinematic film set, 8k resolution, atmospheric lighting, detailed architecture and interior/exterior environment, no text.`;
+
+            try {
+                const imgUrl = await callImageModel(prompt, "16:9", null);
+                appState.locationImages[idx] = imgUrl;
+                box.innerHTML = `
+                    <img src="${imgUrl}" alt="${loc.namaLokasi}" class="w-full h-full object-cover">
+                    <a href="${imgUrl}" download="lokasi-${loc.namaLokasi.replace(/\s+/g, '-')}.png" class="absolute bottom-2.5 right-2.5 px-2.5 py-1 rounded-lg bg-black/75 hover:bg-black text-white text-[11px] font-medium backdrop-blur-sm border border-white/10">Unduh</a>
+                `;
+            } catch (err) {
+                console.error(err);
+                box.innerHTML = `<div class="text-center p-4"><p class="text-xs text-amber-400 mb-2">Gagal memuat lokasi</p><button onclick="generateSingleLocation(${idx})" class="px-3 py-1 rounded bg-zinc-800 text-xs text-white">Coba Lagi</button></div>`;
+            }
+        }
+
+        async function generateAllVisuals() {
+            if (!appState.scriptData) {
+                showToast('Selesaikan Tahap 2 terlebih dahulu!', 'error');
+                return;
+            }
+            const btn = document.getElementById('btn-gen-all-visuals');
+            btn.disabled = true;
+            btn.classList.add('opacity-50');
+            showToast('Mulai menggenerate semua karakter & lokasi...');
+
+            const charPromises = appState.scriptData.characters.map((_, idx) => generateSingleCharacter(idx));
+            const locPromises = appState.scriptData.locations.map((_, idx) => generateSingleLocation(idx));
+            await Promise.allSettled([...charPromises, ...locPromises]);
+
+            btn.disabled = false;
+            btn.classList.remove('opacity-50');
+            document.getElementById('badge-3').classList.replace('bg-zinc-700', 'bg-emerald-400');
+            showToast('Semua aset visual selesai diproses!');
+        }
+
+        async function generateMasterGrid() {
+            if (!appState.scriptData) {
+                showToast('Selesaikan Tahap 2 terlebih dahulu!', 'error');
+                return;
+            }
+            const wrapper = document.getElementById('master-grid-wrapper');
+            const container = document.getElementById('master-grid-container');
+            const timerEl = document.getElementById('grid-timer');
+            const downloadBtn = document.getElementById('download-grid-btn');
+
+            wrapper.classList.remove('hidden');
+            container.innerHTML = `<div class="py-12 flex flex-col items-center gap-3"><div class="w-10 h-10 border-4 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin"></div><p class="text-xs text-zinc-300">Menyusun Lembar Referensi Grid Karakter & Lokasi...</p></div>`;
+
+            const startTime = Date.now();
+            const globalFaceObj = appState.globalFaceBase64 ? { base64: appState.globalFaceBase64, mimeType: appState.globalFaceMimeType } : null;
+            const charList = appState.scriptData.characters.map(c => `${c.nama} (${c.peran}): ${c.deskripsiVisualInggris}`).join('; ');
+            const locList = appState.scriptData.locations.map(l => `${l.namaLokasi}: ${l.deskripsiVisualInggris}`).join('; ');
+
+            const facePrefix = globalFaceObj
+                ? `Use the exact facial identity and likeness of the person in the attached reference photo for the main lead character portrait in the sheet. `
+                : '';
+
+            const gridPrompt = `${facePrefix}A clean organized movie production character and environment reference sheet collage grid. Top rows show separate full-body standing portraits of these characters with small clean name labels: ${charList}. Bottom row shows separate wide establishing shots of empty locations with no humans: ${locList}. Ultra realistic cinematic 8k photography, consistent costume design and lighting.`;
+
+            try {
+                const imgUrl = await callImageModel(gridPrompt, "16:9", globalFaceObj);
+                const elapsed = Math.round((Date.now() - startTime) / 1000);
+                timerEl.textContent = `Diproses selama ${elapsed}s`;
+                downloadBtn.href = imgUrl;
+                container.innerHTML = `<img src="${imgUrl}" alt="Master Reference Grid" class="w-full h-auto max-h-[600px] object-contain">`;
+                showToast('Lembar Grid Referensi berhasil dibuat!');
+            } catch (err) {
+                console.error(err);
+                container.innerHTML = `<p class="text-xs text-rose-400 py-8">Gagal membuat lembar grid referensi. Silakan coba lagi.</p>`;
+            }
+        }
+
+        // ==================== STEP 4: VIDEO PROMPTS (MAX 850 CHARS) ====================
+        async function generateVideoPrompts() {
+            if (!appState.scriptData) {
+                showToast('Selesaikan Tahap 2 terlebih dahulu!', 'error');
+                switchTab(2);
+                return;
+            }
+
+            const btn = document.getElementById('btn-gen-video-prompts');
+            const loader = document.getElementById('loading-4');
+            const container = document.getElementById('video-prompts-container');
+            const sceneDuration = document.getElementById('scene-duration').value;
+            const aspectRatio = document.getElementById('video-aspect-ratio').value;
+            const hasUserFace = Boolean(appState.globalFaceBase64) || Object.keys(appState.characterFaceRefs).length > 0;
+
+            btn.disabled = true;
+            btn.classList.add('opacity-50');
+            loader.classList.remove('hidden');
+            container.innerHTML = '';
+
+            const promptText = `Buatkan prompt video setiap scene yang mudah di copy berdasarkan cerita drama "${appState.selectedIdea.judul}".
+            ATURAN WAJIB:
+            1. Durasi ${sceneDuration} per scene, rasio aspek ${aspectRatio} (${aspectRatio === '9:16' ? 'vertical Reels/Shorts framing' : 'cinematic widescreen 16:9'}).
+            2. Panjang setiap prompt WAJIB padat dan TIDAK BOLEH MELEBIHI 850 karakter (target ideal 650 - 820 karakter per scene).
+            3. ${hasUserFace ? 'Pengguna telah mengunggah foto wajah referensi (Face-Lock aktif), sertakan instruksi singkat untuk menjaga konsistensi wajah dan pakaian dari gambar referensi.' : 'Gunakan deskripsi konsisten wajah, pakaian, dan desain lokasi berikut di seluruh scene.'}
+               Karakter: ${JSON.stringify(appState.scriptData.characters)}
+               Lokasi: ${JSON.stringify(appState.scriptData.locations)}
+            4. Setiap prompt wajib mencakup: gerakan karakter, ekspresi emosional, dialog Bahasa Indonesia (persis sesuai naskah), gerakan kamera sinematik, sound effect (SFX), dan musik dramatis.
+            5. Daftar scene dari naskah: ${JSON.stringify(appState.scriptData.scenes)}`;
+
+            const payload = {
+                contents: [{ parts: [{ text: promptText }] }],
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: {
+                        type: "ARRAY",
+                        items: {
+                            type: "OBJECT",
+                            properties: {
+                                sceneNumber: { type: "INTEGER" },
+                                judulScene: { type: "STRING" },
+                                promptSiapCopy: { type: "STRING", description: "Complete cinematic drama video prompt strictly under 850 characters including character movement, emotional expression, Indonesian dialogue, camera movement, sound effects, and dramatic music." }
+                            },
+                            required: ["sceneNumber", "judulScene", "promptSiapCopy"]
+                        }
+                    }
+                }
+            };
+
+            try {
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+                const data = await fetchWithRetry(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const rawJson = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                appState.videoPrompts = JSON.parse(rawJson);
+                renderVideoPrompts(aspectRatio);
+                document.getElementById('badge-4').classList.replace('bg-zinc-700', 'bg-emerald-400');
+                showToast('Semua prompt video drama siap disalin!');
+            } catch (error) {
+                console.error(error);
+                container.innerHTML = `<div class="col-span-full p-6 bg-rose-950/40 border border-rose-500/40 rounded-2xl text-center text-rose-300 text-sm">Gagal menyusun prompt video. Silakan klik tombol Generate lagi.</div>`;
+                showToast('Gagal membuat prompt video.', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.classList.remove('opacity-50');
+                loader.classList.add('hidden');
+            }
+        }
+
+        function renderVideoPrompts(aspectRatio = "16:9") {
+            const container = document.getElementById('video-prompts-container');
+            container.innerHTML = appState.videoPrompts.map((item, idx) => {
+                let finalPrompt = item.promptSiapCopy;
+                if (finalPrompt.length > 850) {
+                    finalPrompt = finalPrompt.substring(0, 847) + '...';
+                }
+                const charCount = finalPrompt.length;
+                const isOptimal = charCount <= 850;
+
+                return `
+                <div class="glass-panel rounded-2xl p-5 border border-zinc-800 flex flex-col justify-between space-y-3">
+                    <div class="flex items-center justify-between gap-2">
+                        <div class="flex items-center gap-2">
+                            <span class="px-2.5 py-1 rounded-lg bg-purple-600 text-white font-bold text-xs">SCENE ${item.sceneNumber}</span>
+                            <h4 class="font-semibold text-sm text-white truncate max-w-[180px] sm:max-w-[240px]">${item.judulScene}</h4>
+                        </div>
+                        <span class="text-[11px] font-mono px-2 py-0.5 rounded ${isOptimal ? 'bg-emerald-500/15 text-emerald-400' : 'bg-rose-500/15 text-rose-400'}">
+                            ${charCount}/850 kar
+                        </span>
+                    </div>
+
+                    <textarea id="vp-text-${idx}" oninput="updateCharCounter(${idx})" rows="6" class="w-full bg-studio-950 border border-zinc-800 rounded-xl p-3.5 text-xs sm:text-sm text-zinc-200 leading-relaxed focus:outline-none focus:border-purple-500 resize-none">${finalPrompt}</textarea>
+
+                    <div class="flex items-center justify-between pt-1">
+                        <span class="text-[11px] text-zinc-500">Rasio ${aspectRatio} • Siap Paste</span>
+                        <button onclick="copyVideoPrompt(${idx})" class="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold transition flex items-center gap-1.5 shadow-md shadow-purple-600/20">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                            <span>Copy Prompt Scene ${item.sceneNumber}</span>
+                        </button>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        function updateCharCounter(idx) {
+            const textarea = document.getElementById(`vp-text-${idx}`);
+            const count = textarea.value.length;
+            const badge = textarea.parentElement.querySelector('span.font-mono');
+            badge.textContent = `${count}/850 kar`;
+            if (count <= 850) {
+                badge.className = 'text-[11px] font-mono px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400';
+            } else {
+                badge.className = 'text-[11px] font-mono px-2 py-0.5 rounded bg-rose-500/15 text-rose-400';
+            }
+        }
+
+        function copyVideoPrompt(idx) {
+            const text = document.getElementById(`vp-text-${idx}`).value;
+            copyTextToClipboard(text);
+        }
+    </script>
+</body>
+</html>
